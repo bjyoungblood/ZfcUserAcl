@@ -2,7 +2,8 @@
 
 namespace ZfcUserAcl\Service;
 
-use Zend\Acl\Acl;
+use Zend\Acl\Acl,
+    ZfcUserAcl\Model\Role;
 
 class ZfcUserAclService
 {
@@ -16,7 +17,6 @@ class ZfcUserAclService
         $acl = new Acl();
         $acl->addRole('master');
         $acl->addRole('slave');
-        $acl->addRole('bitch');
         return $acl;
     }
 
@@ -27,14 +27,8 @@ class ZfcUserAclService
 
     public function getUserRole()
     {
-        if (!$this->userService->getAuthService()->hasIdentity()) {
-            $role = $this->roleMapper->getDefaultRole();
-        } else {
-            $identity = $this->userService->getAuthService()->getIdentity();
-            $role = $this->roleMapper->getUserRole($identity->getUserId());
-            $role->setBaseName($role->getRoleId());
-            $role->setRoleId($role->getRoleId() . '/' . $identity->getUserId());
-        }
+        $role = new Role();
+        $role->setRoleId('user-identity');
 
         return $role;
     }

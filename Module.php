@@ -20,7 +20,7 @@ class Module implements AutoloaderProvider
             $service = $locator->get('ZfcUserAcl\Service\ZfcUserAclService');
 
             $manager = $e->getTarget();
-            $manager->events()->attach('ZfcAcl\Service\Acl.getAcl', array($service, 'loadAcl'));
+            $manager->events()->attach('ZfcAcl\Service\Acl.loadStaticAcl', array($service, 'loadAcl'));
             $manager->events()->attach('ZfcAcl\Service\Acl.loadResource', array($service, 'loadResource'));
         });
     }

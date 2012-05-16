@@ -19,7 +19,8 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
         $sql->from($this->tableName)
             ->where($where);
 
-        $row = $this->getTableGateway()->selectWith($sql)->current();
+        $rowset = $this->getTableGateway()->selectWith($sql);
+        $row = $row->current()->toArray();
 
         return Role::fromArray((array) $row);
     }
@@ -33,7 +34,15 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
         $sql->from($this->tableName)
             ->where("$identifier = 1");
 
-        $row = $this->getTableGateway()->selectWith($sql)->current();
+        $rowset = $this->getTableGateway()->selectWith($sql);
+
+        if (count($rowset) < 1) {
+            throw new \Exception('Please define a default role.');
+        } else if (count($rowset) > 1) {
+            throw new \Exception('Please define only one default role.');
+        }
+
+        $row = $rowset->current();
 
         return Role::fromArray((array) $row);
     }
@@ -50,6 +59,11 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
 
         $sql->where($where);
         $rowset = $this->getTableGateway()->selectWith($sql);
+
+        if (count($rowset) < 1) {
+            return $this->getDefaultRole();
+        }
+
         $row = $rowset->current();
 
         return Role::fromArray((array) $row);

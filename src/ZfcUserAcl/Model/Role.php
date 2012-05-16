@@ -9,8 +9,12 @@ class Role extends ModelAbstract implements RoleInterface
     protected $roleId;
     protected $default;
     protected $weight;
-    protected $baseName;
  
+    public function __construct($roleId = null)
+    {
+        $this->roleId = $roleId;
+    }
+
     /**
      * Get roleId.
      *
@@ -71,27 +75,6 @@ class Role extends ModelAbstract implements RoleInterface
     public function setWeight($weight)
     {
         $this->weight = $weight;
-        return $this;
-    }
- 
-    /**
-     * Get baseName.
-     *
-     * @return baseName
-     */
-    public function getBaseName()
-    {
-        return $this->baseName;
-    }
- 
-    /**
-     * Set baseName.
-     *
-     * @param $baseName the value to be set
-     */
-    public function setBaseName($baseName)
-    {
-        $this->baseName = $baseName;
         return $this;
     }
 }

@@ -15,13 +15,9 @@ return array(
             'ZfcUserAcl\Service\AclLoaderZendDb' => array(
                 'parameters' => array(
                     'roleMapper' => 'zfcuser_role_mapper',
+                    'userService' => 'ZfcUser\Service\User',
                     //'resourceMapper' => 'ZfcUserAcl\Model\ResourceMapper',
                     //'ruleMapper' => 'ZfcUserAcl\Model\RuleMapper'
-                ),
-            ),
-            'ZfcUserAcl\Service\RoleProvider' => array(
-                'parameters' => array(
-                    'zfcUserAclService' => 'ZfcUserAcl\Service\ZfcUserAclService',
                 ),
             ),
             'ZfcUserAcl\Service\ZfcUserAclService' => array(
