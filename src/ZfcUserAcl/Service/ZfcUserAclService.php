@@ -12,6 +12,7 @@ class ZfcUserAclService
 
     public function loadAcl()
     {
+        var_dump('ZfcUserAclService::loadAcl');die();
         $acl = new Acl();
         $acl->addRole('master');
         $acl->addRole('slave');
@@ -19,10 +20,20 @@ class ZfcUserAclService
         return $acl;
     }
 
+    public function loadResource()
+    {
+        var_dump('ZfcUserAclService::loadResource');die();
+    }
+
     public function getUserRole()
     {
         if (!$this->userService->getAuthService()->hasIdentity()) {
             $role = $this->roleMapper->getDefaultRole();
+        } else {
+            $identity = $this->userService->getAuthService()->getIdentity();
+            $role = $this->roleMapper->getUserRole($identity->getUserId());
+            $role->setBaseName($role->getRoleId());
+            $role->setRoleId($role->getRoleId() . '/' . $identity->getUserId());
         }
 
         return $role;

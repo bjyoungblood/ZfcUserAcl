@@ -9,7 +9,14 @@ return array(
             'ZfcAcl\Service\Acl' => array(
                 'parameters' => array(
                     'roleProvider' => 'ZfcUserAcl\Service\RoleProvider',
-                    'aclLoader' => 'ZfcUserAcl\Service\AclLoader',
+                    'aclLoader' => 'ZfcUserAcl\Service\AclLoaderZendDb',
+                ),
+            ),
+            'ZfcUserAcl\Service\AclLoaderZendDb' => array(
+                'parameters' => array(
+                    'roleMapper' => 'zfcuser_role_mapper',
+                    //'resourceMapper' => 'ZfcUserAcl\Model\ResourceMapper',
+                    //'ruleMapper' => 'ZfcUserAcl\Model\RuleMapper'
                 ),
             ),
             'ZfcUserAcl\Service\RoleProvider' => array(
