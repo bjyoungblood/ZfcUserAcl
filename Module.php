@@ -2,50 +2,53 @@
 
 namespace ZfcUserAcl;
 
-use Zend\Module\Manager,
-    Zend\Module\Consumer\AutoloaderProvider,
-    Zend\EventManager\StaticEventManager;
+use Zend\ModuleManager\ModuleManager,
+    Zend\ModuleManager\Feature\AutoloaderProviderInterface,
+    Zend\ModuleManager\Feature\ConfigProviderInterface,
+    Zend\ModuleManager\Feature\ServiceProviderInterface, 
+    Zend\Mvc\ApplicationInterface,
+    ZfcBase\Module\ModuleAbstract;
 
-class Module implements AutoloaderProvider
+class Module extends ModuleAbstract implements 
+    AutoloaderProviderInterface, 
+    ConfigProviderInterface, 
+    ServiceProviderInterface
 {
     protected $zfcUserAclService;
 
-    public function init(Manager $moduleManager)
+    public function bootstrap(ModuleManager $manager, ApplicationInterface $app)
     {
-        $events = $moduleManager->events();
-        $sharedEvents = $events->getSharedManager();
-        $sharedEvents->attach('bootstrap', 'bootstrap', function($e) {
-            $app = $e->getParam('application');
-            $locator = $app->getLocator();
-            $service = $locator->get('ZfcUserAcl\Service\ZfcUserAclService');
-
-            $manager = $e->getTarget();
-            $manager->events()->attach('ZfcAcl\Service\Acl.loadStaticAcl', array($service, 'loadAcl'));
-            $manager->events()->attach('ZfcAcl\Service\Acl.loadResource', array($service, 'loadResource'));
-        });
+        $locator = $app->getServiceManager();
+        $service = $locator->get('ZfcUserAcl\Service\ZfcUserAclService');
+        $manager->events()->attach('ZfcAcl\Service\Acl.loadStaticAcl', array($service, 'loadAcl'));
+        $manager->events()->attach('ZfcAcl\Service\Acl.loadResource', array($service, 'loadResource'));
     }
 
-    public function getAutoloaderConfig()
+    public function getServiceConfiguration()
     {
         return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
+            'factories' => array(
+                'ZfcUserAcl\Service\ZfcUserAclService' => function ($sm) {
+                    $service = new Service\ZfcUserAclService;
+                    return $service;
+                },
             ),
         );
-    }
-
-    public function getConfig()
-    {
-        return include __DIR__ . '/config/module.config.php';
     }
 
     public function modulesLoaded($e)
     {
         $this->zfcUserAclService->init();
     }
+
+    public function getDir()
+    {
+        return __DIR__;
+    }
+
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+     
 }
