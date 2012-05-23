@@ -17,11 +17,16 @@ class AclLoaderZendDb implements AclLoaderInterface
             $staticRole = $this->roleMapper->getDefaultRole();
         } else {
             $identity = $this->userService->getAuthService()->getIdentity();
-            $staticRole = $this->roleMapper->getUserRole($identity->getUserId());
+            $staticRole = $this->roleMapper->getUserRole($identity);
         }
 
-        $acl->addRole($staticRole);
-        $acl->addRole(new Role($roleId), array($staticRole));
+        try {
+            $acl->addRole($staticRole);
+        } catch (\Exception $e) {
+            // role already added
+        }
+
+        $acl->addRole($roleId, $staticRole);
     }
 
     public function getRoleMapper()

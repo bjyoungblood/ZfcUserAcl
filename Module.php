@@ -25,7 +25,7 @@ class Module extends ModuleAbstract implements
     {
         $locator = $app->getServiceManager();
         $service = $locator->get('ZfcUserAcl\Service\ZfcUserAclService');
-        $manager->events()->attach('ZfcAcl\Service\Acl.loadStaticAcl', array($service, 'loadAcl'));
+        $manager->events()->attach('getAcl', array($service, 'loadAcl'));
         $manager->events()->attach('ZfcAcl\Service\Acl.loadResource', array($service, 'loadResource'));
     }
 
@@ -71,6 +71,8 @@ class Module extends ModuleAbstract implements
                     $service = new Service\ZfcUserAclService;
                     $service->setAclService($sm->get('zfcacl_service'));
                     $service->setUserService($sm->get('zfcuser_user_service'));
+                    $service->setRoleMapper($sm->get('ZfcUserAcl\Model\RoleMapper'));
+                    $service->setServiceManager($sm);
                     return $service;
                 },
             ),

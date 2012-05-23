@@ -25,6 +25,19 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
         return Role::fromArray((array) $row);
     }
 
+    public function getAllStaticRoles()
+    {
+        $sql = new Select;
+        $sql->from($this->tableName);
+
+        $rowset = $this->getTableGateway()->selectWith($sql);
+        if (count($rowset) < 1) {
+            throw new \Exception('No ACL roles defined.');
+        }
+
+        return Role::fromArraySet((array) $rowset->toArray());
+    }
+
     public function getDefaultRole()
     {
         $platform = $this->getTableGateway()->getAdapter()->getPlatform();
