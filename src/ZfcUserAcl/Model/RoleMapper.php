@@ -67,8 +67,7 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
 
         $sql = new Select;
         $sql->from('user_role')
-            ->join('user_role_linker', 'user_role.role_id = user_role_linker.role_id', array())
-            ->order('weight DESC');
+            ->join('user_role_linker', 'user_role.role_id = user_role_linker.role_id', array());
 
         $sql->where($where);
         $rowset = $this->getTableGateway()->selectWith($sql);

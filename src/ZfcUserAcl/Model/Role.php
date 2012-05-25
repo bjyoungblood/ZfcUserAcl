@@ -8,7 +8,7 @@ class Role extends ModelAbstract implements RoleInterface
 {
     protected $roleId;
     protected $default;
-    protected $weight;
+    protected $parent;
  
     public function __construct($roleId = null)
     {
@@ -58,23 +58,23 @@ class Role extends ModelAbstract implements RoleInterface
     }
  
     /**
-     * Get weight.
+     * Get parent.
      *
-     * @return weight
+     * @return parent
      */
-    public function getWeight()
+    public function getParent()
     {
-        return $this->weight;
+        return $this->parent;
     }
  
     /**
-     * Set weight.
+     * Set parent.
      *
-     * @param $weight the value to be set
+     * @param $parent the value to be set
      */
-    public function setWeight($weight)
+    public function setParent($parent)
     {
-        $this->weight = $weight;
+        $this->parent = $parent;
         return $this;
     }
 }

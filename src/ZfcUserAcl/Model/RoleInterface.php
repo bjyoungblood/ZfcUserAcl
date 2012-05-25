@@ -12,6 +12,6 @@ interface RoleInterface extends ZfRoleInterface
     public function getDefault();
     public function setDefault($default);
  
-    public function getWeight();
-    public function setWeight($weight);
+    public function getParent();
+    public function setParent($parent);
 }
