@@ -14,7 +14,7 @@ class AclLoaderZendDb implements AclLoaderInterface
     public function loadAclByRoleId(Acl $acl, $roleId)
     {
         if (!$this->userService->getAuthService()->hasIdentity()) {
-            $staticRole = $this->roleMapper->getDefaultRole();
+            $staticRoles = array($this->roleMapper->getDefaultRole());
         } else {
             $identity = $this->userService->getAuthService()->getIdentity();
             $staticRoles = $this->roleMapper->getUserRoles($identity);
