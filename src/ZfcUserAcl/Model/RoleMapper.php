@@ -25,17 +25,51 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
         return Role::fromArray((array) $row);
     }
 
-    public function getAllStaticRoles()
+    /**
+     * @TODO caching
+     */
+    public function getAllStaticRoles($parentId = null)
     {
         $sql = new Select;
         $sql->from($this->tableName);
 
-        $rowset = $this->getTableGateway()->selectWith($sql);
-        if (count($rowset) < 1) {
-            throw new \Exception('No ACL roles defined.');
-        }
+        if (is_null($parentId)) {
+            $where = new Where;
+            $where->isNull('parent')->OR->equalTo('parent', '');
 
-        return Role::fromArraySet((array) $rowset->toArray());
+            $sql->where($where);
+
+            $rowset = $this->getTableGateway()->selectWith($sql);
+            if (count($rowset) < 1) {
+                throw new \Exception('No top-level ACL roles defined.');
+            }
+
+            $roles = Role::fromArraySet((array) $rowset->toArray());
+
+            foreach ($roles as $r) {
+                $children = $this->getAllStaticRoles($r->getRoleId());
+                $r->setChildren($children);
+            }
+
+            return $roles;
+        } else {
+            $where = new Where;
+            $where->equalTo('parent', $parentId);
+
+            $rowset = $this->getTableGateway()->selectWith($sql->where($where));
+            if (count($rowset) > 0) {
+                $roles = Role::fromArraySet((array) $rowset->toArray());
+
+                foreach ($roles as $r) {
+                    $children = $this->getAllStaticRoles($r->getRoleId());
+                    $r->setChildren($children);
+                }
+
+                return $roles;
+            } else {
+                return array();
+            }
+        }
     }
 
     public function getDefaultRole()
@@ -60,7 +94,7 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
         return Role::fromArray((array) $row);
     }
 
-    public function getUserRole($userId)
+    public function getUserRoles($userId)
     {
         $where = new Where();
         $where->equalTo('user_role_linker.user_id', $userId); 
@@ -76,8 +110,6 @@ class RoleMapper extends DbMapperAbstract implements RoleMapperInterface
             return $this->getDefaultRole();
         }
 
-        $row = $rowset->current();
-
-        return Role::fromArray((array) $row);
+        return Role::fromArraySet((array) $rowset->toArray());
     }
 }

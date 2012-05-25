@@ -19,7 +19,7 @@ class ZfcUserAclService
     {
         $allRoles = $this->roleMapper->getAllStaticRoles();
         foreach ($allRoles as $role) {
-            $this->getAclService()->getAcl()->addRole($role);
+            $this->_addRoleRecursive($this->getAclService()->getAcl(), $role);
         }
 
         $loader = $this->serviceManager->get('ZfcUserAcl\Service\AclLoaderZendDb');
@@ -41,6 +41,14 @@ class ZfcUserAclService
 
         $this->loadResources($resources, null);
         $this->loadRules($rules);
+    }
+
+    protected function _addRoleRecursive($acl, $role)
+    {
+        $acl->addRole($role, $role->getParent());
+        foreach($role->getChildren() as $c) {
+            $this->_addRoleRecursive($acl, $c);
+        }
     }
 
     /**

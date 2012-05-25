@@ -9,6 +9,7 @@ class Role extends ModelAbstract implements RoleInterface
     protected $roleId;
     protected $default;
     protected $parent;
+    protected $children;
  
     public function __construct($roleId = null)
     {
@@ -75,6 +76,23 @@ class Role extends ModelAbstract implements RoleInterface
     public function setParent($parent)
     {
         $this->parent = $parent;
+        return $this;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function setChildren(array $children)
+    {
+        $this->children = $children;
+        return $this;
+    }
+
+    public function addChild(RoleInterface $child)
+    {
+        $this->children[] = $child;
         return $this;
     }
 }
