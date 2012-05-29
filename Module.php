@@ -18,15 +18,7 @@ class Module extends ModuleAbstract implements
 
     public function init(ModuleManager $moduleManager)
     {
-        $moduleManager->events()->attach('loadModules.post', array($this, 'modulesLoaded'));
-    }
-
-    public function bootstrap(ModuleManager $manager, ApplicationInterface $app)
-    {
-        $locator = $app->getServiceManager();
-        $service = $locator->get('ZfcUserAcl\Service\ZfcUserAclService');
-        $manager->events()->attach('getAcl', array($service, 'loadAcl'));
-        $manager->events()->attach('ZfcAcl\Service\Acl.loadResource', array($service, 'loadResource'));
+        $this->moduleManager = $moduleManager;
     }
 
     public function getServiceConfiguration()
@@ -73,16 +65,11 @@ class Module extends ModuleAbstract implements
                     $service->setUserService($sm->get('zfcuser_user_service'));
                     $service->setRoleMapper($sm->get('ZfcUserAcl\Model\RoleMapper'));
                     $service->setServiceManager($sm);
+                    $service->load($this->moduleManager->events());
                     return $service;
                 },
             ),
         );
-    }
-
-    public function modulesLoaded($e)
-    {
-        $service = $e->getParam('ServiceManager')->get('ZfcUserAcl\Service\ZfcUserAclService');
-        $service->load($e);
     }
 
     public function getDir()

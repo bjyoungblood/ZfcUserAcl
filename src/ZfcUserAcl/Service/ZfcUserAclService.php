@@ -15,7 +15,7 @@ class ZfcUserAclService
     const TYPE_ALLOW = 'allow';
     const TYPE_DENY = 'deny';
 
-    public function load($e)
+    public function load($events)
     {
         $allRoles = $this->roleMapper->getAllStaticRoles();
         foreach ($allRoles as $role) {
@@ -26,8 +26,8 @@ class ZfcUserAclService
         $provider = $this->serviceManager->get('ZfcUserAcl\Service\RoleProvider');
         $loader->loadAclByRoleId($this->aclService->getAcl(), $provider->getCurrentRole());
 
-        $resourceResponse = $e->getTarget()->events()->trigger('ZfcUserAcl.loadAclResources', $this);
-        $ruleResponse = $e->getTarget()->events()->trigger('ZfcUserAcl.loadAclRules', $this);
+        $resourceResponse = $events->trigger('ZfcUserAcl.loadAclResources', $this);
+        $ruleResponse = $events->trigger('ZfcUserAcl.loadAclRules', $this);
 
         $resources = array();
         foreach ($resourceResponse as $i) {
