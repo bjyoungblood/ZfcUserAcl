@@ -1,1 +1,26 @@
+{
+    "name": "zf-commons/zfc-user-acl",
+    "description": "The glue between ZfcUser and ZfcAcl",
+    "type": "library",
+    "keywords": [ "zf2", "module" ],
+    "homepage": "https://github.com/bjyoungblood/ZfcUserAcl",
+    "authors": [
+        {
+            "name": "Ben Youngblood",
+            "email": "bx.youngblood@gmail.com",
+            "homepage": "http://bjyoungblood.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zf-commons/zfc-user"
+    },
+    "autoload": {
+        "psr-0": {
+            "ZfcUser": "src/"
+        },
+        "classmap": [
+            "./"
+        ]
+    }
 }
