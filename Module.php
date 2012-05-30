@@ -18,7 +18,16 @@ class Module extends ModuleAbstract implements
 
     public function init(ModuleManager $moduleManager)
     {
+        parent::init($moduleManager);
         $this->moduleManager = $moduleManager;
+    }
+    
+    public function bootstrap(ModuleManager $moduleManager, ApplicationInterface $app)
+    {
+        $locator = $app->getServiceManager();
+        $service = $locator->get('ZfcUserAcl\Service\ZfcUserAclService');
+        $service->setServiceManager($locator);
+        $service->load($moduleManager->events());
     }
 
     public function getServiceConfiguration()
@@ -64,8 +73,6 @@ class Module extends ModuleAbstract implements
                     $service->setAclService($sm->get('zfcacl_service'));
                     $service->setUserService($sm->get('zfcuser_user_service'));
                     $service->setRoleMapper($sm->get('ZfcUserAcl\Model\RoleMapper'));
-                    $service->setServiceManager($sm);
-                    $service->load($this->moduleManager->events());
                     return $service;
                 },
             ),
