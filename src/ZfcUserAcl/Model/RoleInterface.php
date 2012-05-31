@@ -6,7 +6,6 @@ use Zend\Acl\Role\RoleInterface as ZfRoleInterface;
 
 interface RoleInterface extends ZfRoleInterface
 {
-    public function getRoleId();
     public function setRoleId($roleId);
  
     public function getDefault();
