@@ -90,20 +90,26 @@ class ZfcUserAclService
     protected function loadRule(array $rule, $type) {
         $privileges = null;
 
-        if (count($rule) == 3) {
+        if (count($rule) == 4) {
+            // role/resource/privilege/assertion defined
+            list($roles, $resources, $privileges, $assertion) = $rule;
+        } else if (count($rule) == 3) {
             // role/resource/privilege defined
             list($roles, $resources, $privileges) = $rule;
+            $assertion = null;
         } else if (count($rule) == 2) {
             // role/resource defined
             list($roles, $resources) = $rule;
+            $privileges = null;
+            $assertion = null;
         } else {
             throw new \InvalidArgumentException("Invalid rule definition: " . print_r($rule, true));
         }
 
         if($type == static::TYPE_ALLOW) {
-            $this->getAclService()->getAcl()->allow($roles, $resources, $privileges);
+            $this->getAclService()->getAcl()->allow($roles, $resources, $privileges, $assertion);
         } else {
-            $this->getAclService()->getAcl()->deny($roles, $resources, $privileges);
+            $this->getAclService()->getAcl()->deny($roles, $resources, $privileges, $assertion);
         }
     }
 
