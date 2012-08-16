@@ -1,6 +1,7 @@
-ZfcUserAcl
-========
-Version 0.0.1 Created by Ben Youngblood
+ZfcUserAcl *DEPRECATED*
+=======================
+This module has been deprecated, as ZfcAcl has not been actively maintained in some months.
+For a Zend\Acl solution, I recommend bjyoungblood/BjyAuthorize
 
 Introduction
 ------------
